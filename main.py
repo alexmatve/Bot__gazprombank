@@ -7,7 +7,7 @@ from aiogram.fsm.storage.memory import MemoryStorage
 
 from HR import SalesGPT, llm
 
-bot_token = ''
+bot_token = '6680547488:AAGw_y0ncoSJf7UqFUvb36Yggg9PQI0BjNY'
 
 sales_agent = None
 
