@@ -23,7 +23,7 @@ import json
 #             cls.names.append(obj.course_name)
 
 INFORMATION = '||'
-
+course_names = []
 with open('course.json', encoding='utf-8') as f:
     templates = json.load(f)
 
@@ -35,6 +35,9 @@ for c in templates:
         if type(value) == list:
             value = ",".join(value)
         INFORMATION += f"{key}: {value}*"
+        if key == "Course_name":
+            course_names.append(value)
     INFORMATION += "||"
+course_names = ", ".join(course_names)
 
 # print(INFORMATION)
