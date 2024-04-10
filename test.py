@@ -30,8 +30,8 @@ with open('course.json', encoding='utf-8') as f:
 # for c in templates:
 #     course = Course(c['Course_name'], c['Duration'], c['Description'],
 #                     c['What_you_will_learn'], c['Course_program'], c.get('Listeners', None))
-for course in templates:
-    for key, value in course.items():
+for c in templates:
+    for key, value in c.items():
         if type(value) == list:
             value = ",".join(value)
         INFORMATION += f"{key}: {value}*"
