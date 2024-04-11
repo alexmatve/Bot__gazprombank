@@ -9,12 +9,24 @@ from langchain.llms import BaseLLM
 from langchain_core.prompts import ChatPromptTemplate
 
 from deepinfra import ChatDeepInfra
-from test import INFORMATION, course_names
+from load_json import data
 
 llm = ChatDeepInfra(temperature=0.7)
 
+
+def promt_data(column):
+    promt = f""
+    for course_name in data["Course_name"].values:
+        column_info = data[data['Course_name'] == course_name][column].values[0]
+        if type(column_info) == list:
+            column_info = ", ".join(column_info)
+        promt += f"Для курса с названием '{course_name}' такие данные о '{column}': {column_info}\n"
+    return promt
+
 class SalesGPT(Chain):
     """Controller model for the Sales Agent."""
+
+
 
     salesperson_name = "Хэнк"
     salesperson_role = "Менеджер - консультант компании, в частности отвечающий на вопросы об учебных курсах"
@@ -28,9 +40,9 @@ class SalesGPT(Chain):
 
     conversation_purpose = "сделать вывод, какой курс подходит для пользователя из предложенных. Для этого нужно отвечать на его вопросы и задавать свои, чтобы с точностью понять предпочтения пользователя и его готовность к обучению по конкретным темам."
     conversation_type = "чат мессенджера"
-    courses = INFORMATION
 
-    course_names = course_names
+    course_names = ", ".join(data['Course_name'].values)
+
     current_conversation_stage = "1"
     conversation_stage = "Введение. Начните разговор с приветствия и краткого представления себя и названия компании. Поинтересуйтесь, ищет ли пользователь курсы для обучения."
 
@@ -63,19 +75,22 @@ class SalesGPT(Chain):
 
     conversation_history = []
     conversation_history_template = [("system", f"""Никогда не забывайте, что ваше имя {salesperson_name}, вы мужчина. Вы работаете {salesperson_role}. Вы работаете в компании под названием {company_name}. Бизнес {company_name} заключается в следующем: {company_business}.
-Вы впервые связываетесь в {conversation_type} с одним кандидатом с целью {conversation_purpose}. 
-В {courses} содержатся все курсы которые вы можете предложить собеседнику, другие предлагать нельзя, на программном уровне это строка, в которой каждый курс разделён с другими символом '||', а поля в каждом курсе разделены символом '*',в каждом курсе содержатся следующие поля: Course_name, Duration, Description, What_you_will_learn, Listeners, Course_program. Все содержимое о поле перечисляется после символа ':', как раз-таки это вы и передаёте собеседнику. Весь минимум информации о каждом курсе ты берешь из данных полей. Подробнее о каждом из полей рассказано далее:
+Вы впервые связываетесь в {conversation_type} с одним покупателем с целью {conversation_purpose}. 
+Обучение проводится в таком формате: {course_location} с такими деталями: {course_schedule}, {course_date}, {course_status}
 
-Вот, что вам известно о каждом из курсов {courses}:
-У каждого из курсов есть название, и когда собеседник спрашивает какие у тебя есть курсы ты перечисляешь все, на которые указывает данная переменная: Course_name,
-У каждого из курсов написана средняя продолжительность (в среднем необходимое кол-во часов, потраченное на обучение): Duration,
-У каждого из курсов имеется описание, в котором поверхностно рассказывается для чего и для кого нужен этот курс и что в нём будет проходиться, при необходимости ты можешь объяснять клиенту узкоспециализированные слова и подробнее объяснять о той или иной области.: Description,
-У каждого из курсов написано какие навыки приобретут ученики и что они будут изучать: What_you_will_learn,
-У каждого из курсов есть своя структура (план обучения): Course_program,
-В нескольких курсах есть атрибут, отвечающий за целевую аудиторию: Listeners
-У вас также есть список всех курсов: {course_names}
 
-Вы ожидаете, что разговор будет выглядеть примерно следующим образом (это всего лишь пример, где приводится один курс из существующих: 'Машинное обучение', информацию про длительность данного курса и описание ты берешь из {courses} сам пользователь может спросить про любой курс), данный пример также подходит для того случая, когда первым диалог начинаете вы:
+Вот, что вам известно о каждом из курсов {course_names}:
+У каждого из курсов есть название, и когда собеседник спрашивает какие у вас есть курсы ты перечисляешь все {course_names},
+У каждого из курсов написана средняя продолжительность (в среднем необходимое кол-во часов, потраченное на обучение): {promt_data('Duration')},
+У каждого из курсов имеется описание, в котором поверхностно рассказывается для чего и для кого нужен этот курс и что в нём будет проходиться: {promt_data('Description')},
+У каждого из курсов написано какие навыки приобретут ученики и что они будут изучать: {promt_data('What_you_will_learn')},
+У каждого из курсов есть своя структура (план обучения, модули): {promt_data('Course_program')},
+В нескольких курсах есть атрибут, отвечающий за целевую аудиторию: {promt_data('Listeners')}
+
+Тебе запрещено брать информацию о курсах из сторонних источников, используй только те данные о курсах, которые написаны выше.
+Тебе запрещено заходить на сайт комании {company_name} и брать оттуда информацию о курсах.
+
+Вы ожидаете, что разговор будет выглядеть примерно следующим образом (это всего лишь пример, где приводится один курс из существующих: 'Машинное обучение', сам пользователь может спросить про любой курс), данный пример также подходит для того случая, когда первым диалог начинаете вы:
 {salesperson_name}: Здравствуйте! Меня зовут {salesperson_name}, я {salesperson_role} в компании {company_name}. 
 Клиент: Здравствуйте, какие курсы вы готовы предложить?
 {salesperson_name}: У нас вы можете приобрести данные курсы: {course_names}. Вас интересует что-то конкретное?
@@ -102,6 +117,8 @@ class SalesGPT(Chain):
 
 {salesperson_name}:
 """)]
+
+
 
     @property
     def input_keys(self) -> List[str]:
@@ -136,6 +153,8 @@ class SalesGPT(Chain):
         response = llm.invoke(messages)
         conversation_stage_id = (re.findall(r'\b\d+\b', response.content) + ['1'])[0]
 
+        # self.current_course = (re.findall(r'\b\d+\b', response.content))[0]
+        # print(self.current_course)
         self.current_conversation_stage = self.retrieve_conversation_stage(conversation_stage_id)
         #print(f"[Этап разговора {conversation_stage_id}]") #: {self.current_conversation_stage}")
 
@@ -154,7 +173,6 @@ class SalesGPT(Chain):
             course_schedule = self.course_schedule,
             course_date = self.course_date,
             course_status = self.course_status,
-            courses = self.courses,
             course_names = self.course_names
         )
 

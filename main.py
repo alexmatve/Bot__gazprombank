@@ -37,8 +37,10 @@ async def main():
             if human_message:
                 sales_agent.human_step(human_message)
                 sales_agent.analyse_stage()
+            await message.answer('Генерируется ответ♻️')
             ai_message = sales_agent.ai_step()
             await message.answer(ai_message)
+            await bot.delete_message(chat_id=message.chat.id, message_id=message.message_id + 1)
 
     @dp.message(~F.text)
     async def empty(message):
