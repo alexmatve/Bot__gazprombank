@@ -1,3 +1,5 @@
+# ПРОГРАММА ДЛЯ ЗАПУСКА БОТА В ЛИЧНОМ СООБЩЕНИИ
+
 import asyncio
 import logging
 import sys
@@ -36,13 +38,13 @@ async def main():
             await message.answer('Используйте команду /start')
         else:
             human_message = message.text
-            print(f"User: {message.text}") # Выводим в консоль сообщение пользователя (необязательная опция)
+            print(f"User: {message.text}")  # Выводим в консоль сообщение пользователя (необязательная опция)
             if human_message:
                 sales_agent.human_step(human_message)
                 sales_agent.analyse_stage()
             await message.answer('Генерируется ответ♻️')
             ai_message = sales_agent.ai_step()
-            print(f"BOT: {ai_message}") # Выводим в консоль сообщение бота (необязательная опция)
+            print(f"BOT: {ai_message}")  # Выводим в консоль сообщение бота (необязательная опция)
             await message.answer(ai_message)
             await bot.delete_message(chat_id=message.chat.id, message_id=message.message_id + 1)
 
@@ -52,6 +54,6 @@ async def main():
 
     await dp.start_polling(bot)
 
+
 if __name__ == "__main__":
     asyncio.run(main())
-

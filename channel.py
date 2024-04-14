@@ -1,3 +1,4 @@
+# ПРОГРАММА ДЛЯ ЗАПУСКА БОТА В КАНАЛЕ ТЕЛЕГРАМА
 import asyncio
 import logging
 
@@ -23,11 +24,11 @@ async def main():
         global sales_agent
         sales_agent = SalesGPT.from_llm(llm, verbose=False)
         sales_agent.seed_agent()
-        #await message.answer('Генерируется ответ♻️')  # Даём понять пользователю, что бот работает (удалили, чтобы тестирующий бот не отвечал на данное сообщение)
+        # await message.answer('Генерируется ответ♻️')  # Даём понять пользователю, что бот работает (удалили, чтобы тестирующий бот не отвечал на данное сообщение)
         ai_message = sales_agent.ai_step()
         print(f"BOT: {ai_message}")
-        #await message.answer(ai_message) # удаляем данную строчку, чтобы не создавалось конфликта между ботами в чате (чтобы не начинали переписываться по два сообщения). Если тестирующий бот не начинает сообщение первым после команды /start, то данную строчку нужно добавить
-        #await bot.delete_message(chat_id=message.chat.id, message_id=message.message_id + 1)
+        # await message.answer(ai_message) # удаляем данную строчку, чтобы не создавалось конфликта между ботами в чате (чтобы не начинали переписываться по два сообщения). Если тестирующий бот не начинает сообщение первым после команды /start, то данную строчку нужно добавить
+        # await bot.delete_message(chat_id=message.chat.id, message_id=message.message_id + 1)
 
     @dp.channel_post(F.text)  # для группы
     async def repl(message):
@@ -35,16 +36,15 @@ async def main():
             await message.answer('Используйте команду /start')
         else:
             human_message = message.text
-            print(f"User: {message.text}") # Выводим в консоль сообщение пользователя (необязательная опция)
+            print(f"User: {message.text}")  # Выводим в консоль сообщение пользователя (необязательная опция)
             if human_message:
                 sales_agent.human_step(human_message)
                 sales_agent.analyse_stage()
-            #await message.answer('Генерируется ответ♻️') # Даём понять пользователю, что бот работает (удалили, чтобы тестирующий бот не отвечал на данное сообщение)
+            # await message.answer('Генерируется ответ♻️') # Даём понять пользователю, что бот работает (удалили, чтобы тестирующий бот не отвечал на данное сообщение)
             ai_message = sales_agent.ai_step()
-            print(f"BOT: {ai_message}") # Выводим в консоль сообщение бота (необязательная опция)
+            print(f"BOT: {ai_message}")  # Выводим в консоль сообщение бота (необязательная опция)
             await message.answer(ai_message)
-            #await bot.delete_message(chat_id=message.chat.id, message_id=message.message_id + 1)
-
+            # await bot.delete_message(chat_id=message.chat.id, message_id=message.message_id + 1)
 
     @dp.channel_post(~F.text)  # для группы
     async def empty(message):
