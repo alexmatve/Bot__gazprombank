@@ -6,7 +6,7 @@ from aiogram import Bot, Dispatcher, F
 from aiogram.filters import Command
 from aiogram.fsm.storage.memory import MemoryStorage
 
-from HR import SalesGPT, llm
+from test_HR import SalesGPT, llm
 
 bot_token = '6680547488:AAGw_y0ncoSJf7UqFUvb36Yggg9PQI0BjNY'
 
