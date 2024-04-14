@@ -145,8 +145,8 @@ class ChatDeepInfra(BaseChatModel):
     n: int = 1
     """Number of chat completions to generate for each prompt. Note that the API may
        not return the full n completions if duplicates are generated."""
-    # max_tokens: int = 1024
-    max_tokens: int = 8192
+    max_tokens: int = 1024
+    #max_tokens: int = 8192
     streaming: bool = False
     max_retries: int = 1
 

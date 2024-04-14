@@ -24,10 +24,10 @@ async def main():
         global sales_agent
         sales_agent = SalesGPT.from_llm(llm, verbose=False)
         sales_agent.seed_agent()
-        await message.answer('Генерируется ответ♻️')  # Даём понять пользователю, что бот работает
+        #await message.answer('Генерируется ответ♻️')  # Даём понять пользователю, что бот работает
         ai_message = sales_agent.ai_step()
         await message.answer(ai_message)
-        await bot.delete_message(chat_id=message.chat.id, message_id=message.message_id + 1)
+        #await bot.delete_message(chat_id=message.chat.id, message_id=message.message_id + 1)
 
     # @dp.message(F.text)
     @dp.channel_post(F.text)  # для группы
@@ -39,10 +39,10 @@ async def main():
             if human_message:
                 sales_agent.human_step(human_message)
                 sales_agent.analyse_stage()
-            await message.answer('Генерируется ответ♻️')
+            #await message.answer('Генерируется ответ♻️')
             ai_message = sales_agent.ai_step()
             await message.answer(ai_message)
-            await bot.delete_message(chat_id=message.chat.id, message_id=message.message_id + 1)
+            #await bot.delete_message(chat_id=message.chat.id, message_id=message.message_id + 1)
 
     # @dp.message(~F.text)
     @dp.channel_post(~F.text)  # для группы
