@@ -26,7 +26,8 @@ async def main():
         sales_agent.seed_agent()
         #await message.answer('Генерируется ответ♻️')  # Даём понять пользователю, что бот работает
         ai_message = sales_agent.ai_step()
-        await message.answer(ai_message)
+        print(ai_message)
+        #await message.answer(ai_message)
         #await bot.delete_message(chat_id=message.chat.id, message_id=message.message_id + 1)
 
     # @dp.message(F.text)
@@ -41,6 +42,7 @@ async def main():
                 sales_agent.analyse_stage()
             #await message.answer('Генерируется ответ♻️')
             ai_message = sales_agent.ai_step()
+            print(ai_message)
             await message.answer(ai_message)
             #await bot.delete_message(chat_id=message.chat.id, message_id=message.message_id + 1)
 
